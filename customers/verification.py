@@ -3,8 +3,8 @@ from twilio.rest import Client
 class MessageHandler:
     phone_number = None
     otp = None
-    acc_sid = 'AC94b9d02a8cfba3054b71456208def8be'
-    auth_token = '349d7c1714e6904e71d8abd5733b7d6d'
+#    acc_sid = 'enter sid'
+#    auth_token = 'enter token'
     def __init__(self,phone_number,otp):
         self.phone_number = phone_number
         self.otp = otp
