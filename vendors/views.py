@@ -34,17 +34,23 @@ class SingleVendorDetailsView(APIView):
 
 class VendorDetailsEntryView(APIView):
     """
-    enter details of a vendor
+    enter and update details of a vendor
     """
     def post(self, request, format=None):
         serializer = VendorDetailsCreateSerializer(data = request.data)
         if serializer.is_valid():
-            serializer.save()                                                      
+            serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-    
-    
-    
+
+    def put(self, request, format=None):
+        vendor = VendorList.objects.get(vendor_id = request.data["vendor_id"])
+        serializer = VendorListSerializer(vendor, request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
 class GetVendorCredentials(APIView):
     """
     get and create vendor credentials
@@ -53,9 +59,7 @@ class GetVendorCredentials(APIView):
         vendor_creds = VendorCredentials.objects.all()
         serializer = VendorCredentialsSerializer(vendor_creds, many=True)
         return Response(serializer.data)
-    """
-        add vendor with credentials
-    """
+#   add vendor with credentials
     def post(self, request):
         name_entry_serializer = VendorListSerializer(data=request.data)
         if name_entry_serializer.is_valid():
@@ -89,9 +93,8 @@ class VendorMedsSupplyListView(APIView):
 class VendorMedsSupplyDetailView(APIView):
     def get(self, request, pk):
         try:
-        	supply = VendorMedsSupply.objects.get(pk=pk)
-        	serializer = VendorMedsSupplySerializer(supply)
-        	return Response(serializer.data)
+            supply = VendorMedsSupply.objects.get(pk=pk)
+            serializer = VendorMedsSupplySerializer(supply)
+            return Response(serializer.data)
         except VendorMedsSupply.DoesNotExist:
             return Response({"error: supply details does not exist"},status = status.HTTP_400_BAD_REQUEST)
-
