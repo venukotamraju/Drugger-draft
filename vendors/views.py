@@ -44,12 +44,35 @@ class VendorDetailsEntryView(APIView):
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, format=None):
-        vendor = VendorList.objects.get(vendor_id = request.data["vendor_id"])
-        serializer = VendorListSerializer(vendor, request.data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            vendor = VendorList.objects.get(vendor_id = request.data["vendor_id"])
+            serializer = VendorListSerializer(vendor, request.data)
+            # for saving only name
+            if serializer.is_valid():
+                serializer.save()
+            # for saving details
+                if request.data["details"]:
+                    vendor_details = VendorDetails.objects.get(vendor_id = vendor)
+                    details = serializer.data["details"]
+                    details.update({"vendor_id":serializer.data["vendor_id"]})
+                    details_serializer = VendorDetailsCreateSerializer(vendor_details, data = details)
+                    if details_serializer.is_valid();
+                        details_serializer.save()
+                        return Response({"name":serializer.data,"details":details_serializer.data}, status = status.HTTP_200_OK)
+                    return Response(details_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
             return Response(serializer.data, status = status.HTTP_200_OK)
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        except VendorList.DoesNotExist:
+            return Response({"message":"Vendor Does Not Exist"}, status = status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, format=None):
+        try:
+            vendor = VendorList.objects.get(vendor_id = request["vendor_id"])
+            vendor_details = VendorDetails.objects.filter(vendor_id = vendor)
+            delete_vendor_details = vendor_details.delete()
+            return Response({"message":"Vendor details deleted successfully."}, status = status.HTTP_204_NO_CONTENT)
+        except VendorList.DoesNotExist:
+            return Response({"message":"Vendor not found."}, status =status.HTTP_400_BAD_REQUEST)
 
 class GetVendorCredentials(APIView):
     """
