@@ -1,11 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
 from .models import CustomerList,CustomerDetails,CustomerSearch,CustomerOTP
-from .serializers import CustomerListSerializer,CustomerDetailsSerializer,CustomerOTPSerializer
+from .serializers import CustomerListSerializer,CustomerDetailsSerializer,CustomerOTPSerializer,CustomerSearchSerializer
 from .verification import MessageHandler
-
+from django.http import Http404
 # Create your views here.
 
 class CustomerListView(APIView):
@@ -95,3 +94,31 @@ class ValidateOTPView(APIView):
             return Response({"message": "OTP is invalid or expired"}, status=status.HTTP_400_BAD_REQUEST)
         except (CustomerList.DoesNotExist, CustomerOTP.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+class SearchView(APIView):
+    def get_customer(self,pk):
+        try:
+            return CustomerList.objects.get(customer_id = pk)
+        except CustomerList.DoesNotExist:
+            raise Http404
+
+    def get(self,pk):
+        # 'return search results of all users' if !pk else 'return search results of pk'
+        customer = self.get_customer(pk) if pk else CustomerList.objects.all()
+        # check if the customer is iterable and pass it to the serializer accordingly.
+        # if the object is not iterable, TypeError exception is raised.
+        try iter(customer):
+            serializer = CustomerListSerializer(customer, many = True)
+            return Response(serializer.data,status = status.HTTP_200_OK)
+        except TypeError:
+            serializer = CustomerListSerializer(customer)
+            return Response(serializer.data,status = status.HTTP_200_OK)
+
+    def post(self,request):
+        # check the presence of customer before entry of data
+        customer = get_customer(request.data.get('customer_id'))
+        serializer = CustomerSearchSerializer(data = request.data)
+        if serializer.is_valid()
+            serializer.save()
+            return Response(serializer.data,status = status.HTTP_201_CREATED)
+        return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
