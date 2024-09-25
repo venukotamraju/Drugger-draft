@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from .models import MedicineList,CategoriesList,MedicineCategory
+from rest_framework import serializers
 
 # serializer for CategoriesList
 class CategoriesListSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class CategoriesListSerializer(serializers.ModelSerializer):
 class MedicineCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicineCategory
-        fields = '__all__'
+        fields = ['medicine_id','category_id']
 
 # serializer for MedicineList
 class MedicineListSerializer(serializers.ModelSerializer):
