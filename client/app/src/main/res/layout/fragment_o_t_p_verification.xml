@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <include
+        android:id="@+id/banner"
+        layout="@layout/banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
+    <!-- OTP Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verify Phone"
+        android:textSize="24sp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- OTP Sent Info -->
+    <TextView
+        android:id="@+id/otpSentText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/colorOnPrimary"
+        android:text="Code has been sent to 1234567890"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- OTP Input Fields -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- OTP Digit Input Fields -->
+        <EditText
+            android:id="@+id/otpDigit1"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/otpDigit2"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/otpDigit3"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/otpDigit4"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <!-- Resend OTP Link -->
+    <TextView
+        android:id="@+id/resendOtpText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Didn't get OTP Code? Resend Code"
+        android:textColor="?attr/colorOnPrimary"
+        android:layout_marginTop="16dp" />
+
+    <!-- Verify Button -->
+    <Button
+        android:id="@+id/verifyOtpButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Verify"
+        android:backgroundTint="#1670b1"
+        android:layout_marginTop="24dp" />
+</LinearLayout>
