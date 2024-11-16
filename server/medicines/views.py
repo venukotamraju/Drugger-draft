@@ -109,3 +109,22 @@ class MedicineCategoryDetailView(APIView):
         medicine_category = self.get_object(pk)
         medicine_category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class MedicineSearchView(APIView):
+    """
+    View for searching medicines either with full name or partial string
+    """
+    def get(self, request, name):
+        
+        if not name:
+            return Response({"error":"Name is required as in /search/medicne/<str:name>"},status=status.HTTP_400_BAD_REQUEST)
+        
+        # Search for medicines with a case-insensitive partial match, store them in "medicines"
+        medicines = MedicineList.objects.filter(medicine_name__icontains=name)
+
+        if not medicines.exists():
+            return Response({"message":"No medicines found for the given search"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Serialize the result
+        serializer = MedicineListSerializer(medicines, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

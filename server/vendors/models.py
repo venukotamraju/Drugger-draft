@@ -33,7 +33,6 @@ class VendorCredentials(models.Model):
         return f"instance for credentials of {self.vendor_email}"
 
 # for medicines available at the vendor
-
 class VendorMedsSupply(models.Model):
     vendor= models.OneToOneField(VendorList,on_delete=models.CASCADE,primary_key = True,db_column = "vendor_id")
     medicine = models.OneToOneField(MedicineList,on_delete=models.DO_NOTHING,db_column = "medicine_id")

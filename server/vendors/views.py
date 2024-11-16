@@ -56,7 +56,7 @@ class VendorDetailsEntryView(APIView):
                     details = serializer.data["details"]
                     details.update({"vendor_id":serializer.data["vendor_id"]})
                     details_serializer = VendorDetailsCreateSerializer(vendor_details, data = details)
-                    if details_serializer.is_valid();
+                    if details_serializer.is_valid():
                         details_serializer.save()
                         return Response({"name":serializer.data,"details":details_serializer.data}, status = status.HTTP_200_OK)
                     return Response(details_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
@@ -108,12 +108,18 @@ class GetSingleVendorCredentials(APIView):
             return Response({"status": status.HTTP_404_NOT_FOUND})
 
 class VendorMedsSupplyListView(APIView):
+    """
+    get vendor-medicine model fields of all the entries
+    """
     def get(self, request):
         supplies = VendorMedsSupply.objects.all()
         serializer = VendorMedsSupplySerializer(supplies, many=True)
         return Response(serializer.data)
-
+    
 class VendorMedsSupplyDetailView(APIView):
+    """
+    functions for getting, posting and deleting medicinal supplies of individual vendors
+    """
     def get(self, request, pk):
         try:
             supply = VendorMedsSupply.objects.get(pk=pk)
@@ -121,3 +127,8 @@ class VendorMedsSupplyDetailView(APIView):
             return Response(serializer.data)
         except VendorMedsSupply.DoesNotExist:
             return Response({"error: supply details does not exist"},status = status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, pk):
+        # try:
+        #     medicineName = MedicineList.objects.filter(medicine_name=request.data["medicine_name"])
+        pass

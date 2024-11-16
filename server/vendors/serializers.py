@@ -42,5 +42,5 @@ class VendorMedsSupplySerializer(serializers.ModelSerializer):
         try:
             medicine = MedicineList.objects.get(medicine_id = obj.medicine_id)
             return MedicineListSerializer(medicine).data
-        except MedicinesList.DoesNotExist:
+        except MedicineList.DoesNotExist:
             return None
