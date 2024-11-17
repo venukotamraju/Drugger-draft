@@ -1,3 +1,4 @@
+from gc import get_objects
 from django.http import Http404
 from .models import VendorList,VendorDetails,VendorCredentials,VendorMedsSupply
 from medicines.models import MedicineList
@@ -6,6 +7,8 @@ from .serializers import VendorListSerializer,VendorDetailsSerializer,VendorDeta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -128,7 +131,36 @@ class VendorMedsSupplyDetailView(APIView):
         except VendorMedsSupply.DoesNotExist:
             return Response({"error: supply details does not exist"},status = status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, pk):
-        # try:
-        #     medicineName = MedicineList.objects.filter(medicine_name=request.data["medicine_name"])
-        pass
+class VendorMedicineLinkView(APIView):
+    """
+    View containing post route to link vendor and his chosen medicine from medicine search
+    """
+
+    # Post route to link vendor with their chosen medicine by taking vendor_id from URL params and medicine_id as a payload
+    def post(self, request, vendor_id):
+        
+        # Validate if the vendor exists
+        try:
+            vendor = VendorList.objects.get(vendor_id=vendor_id)
+        except VendorList.DoesNotExist:
+            return Response({"error":"Vendor not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Extract and validate medicine_id from the request body
+        medicine_id = request.data.get('medicine_id','')
+        print(medicine_id)
+        if not medicine_id:
+            return Response({"error":"'medicine_id' field is required as a payload with some value."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Validate id the medicine exists
+        try:
+            medicine = MedicineList.objects.get(medicine_id=medicine_id)
+        except MedicineList.DoesNotExist:
+            return Response({"error":"Medicine not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the link already exists
+        if VendorMedsSupply.objects.filter(vendor_id=vendor, medicine_id=medicine).exists():
+            return Response({"message":"This medicine is already linked to the vendor"}, status=status.HTTP_200_OK)
+        
+        # Create Link
+        VendorMedsSupply.objects.create(vendor_id=vendor.vendor_id,medicine_id=medicine.medicine_id)
+        return Response({"message":"Medicine Linked Successfully"}, status=status.HTTP_201_CREATED)

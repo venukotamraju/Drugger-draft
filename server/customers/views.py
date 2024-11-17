@@ -43,10 +43,10 @@ class CustomerListView(APIView):
                     details_serializer = CustomerDetailsSerializer(details_instance, data = details)
                     if details_serializer.is_valid():
                         details_serializer.save()
-                        return Response({"name":serializer.data,'details':details.serializer.data},status = status.HTTP_200_OK)
-                    return Response({'name':serializer.data,'details':data_serializer.errors},status = HTTP_206_PARTIAL_CONTENT)
-                return Response(serializer.data,status = HTTP_202_ACCEPTED)
-            return Response(serializer.errors,status = HTTP_400_BAD_REQUEST)
+                        return Response({"name":serializer.data,'details':details_serializer.data},status = status.HTTP_200_OK)
+                    return Response({'name':serializer.data,'details':details_serializer.errors},status = status.HTTP_206_PARTIAL_CONTENT)
+                return Response(serializer.data,status = status.HTTP_202_ACCEPTED)
+            return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
         except CustomerList.DoesNotExist:
             return Response({"message":"Customer Does Not Exist"}, status = status.HTTP_400_BAD_REQUEST)
 

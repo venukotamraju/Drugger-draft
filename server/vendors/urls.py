@@ -10,6 +10,7 @@ urlpatterns = [
     path('singlevendorcredentials/<int:id>',views.GetSingleVendorCredentials.as_view(),name='single-vendor-credentials'),
     path('supplies/',views.VendorMedsSupplyListView.as_view(), name = 'vendor-meds-supply-list'),
     path('supplies/<int:pk>', views.VendorMedsSupplyDetailView.as_view(), name = 'vendor-meds-supply-detail'),
+    path('supplies/<int:vendor_id>/medicine/add/', views.VendorMedicineLinkView.as_view(), name = 'vendor-medicine-add'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
