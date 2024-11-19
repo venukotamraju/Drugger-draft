@@ -42,36 +42,26 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/distanceChoosingLayout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/radiusKms"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_light"
-                android:text="Search with in 5 KMs"
-                android:textSize="21sp"
-                app:layout_constraintBottom_toTopOf="@id/distanceSeekBar"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/distanceSeekBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:stepSize="5"
-                android:value="5"
-                android:valueFrom="0"
-                android:valueTo="20"
+            android:layout_height="wrap_content">
+            <com.google.android.material.chip.Chip
+                android:id="@+id/filterChip"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filter"
+                app:chipIcon="@drawable/filter"/>
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/filteredChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                app:singleLine="true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/radiusKms"
-                app:thumbColor="#1670b1"
-                app:thumbHeight="24dp"
-                app:thumbWidth="4dp"
-                app:trackColorActive="#1670b1"
-                app:trackHeight="8dp" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filterChip"/>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
