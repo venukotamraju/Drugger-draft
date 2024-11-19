@@ -164,3 +164,47 @@ class VendorMedicineLinkView(APIView):
         # Create Link
         VendorMedsSupply.objects.create(vendor_id=vendor.vendor_id,medicine_id=medicine.medicine_id)
         return Response({"message":"Medicine Linked Successfully"}, status=status.HTTP_201_CREATED)
+
+class VendorMedicineCreateView(APIView):
+    """
+    View containg a post method for vendor to create/register an unfound medicine from the medicine-search into the MedicineList
+    """
+    
+    def post(self, request, vendor_id):
+        # This method allows vendor to add a new medicine entry into the MedicineList if the medicine that the vendor is searching for is not found or has already been registered
+        """
+        1. Validate the vendor that is trying to add the medicine with vendor_id from the URL
+        2. Check if the payload has medicine_name and validate if it has some value or not
+        3. Check if the medicine with provided medicine_name already exists or create a new entry in the database
+        4. If the medicine exists then check if the link is present between the vendor and the medicine and respond back if the link exists
+        5. If the link does not exist then create a new entry of link in VendorMedsSupply with the medicine instance therefore created or returned from step 3.
+        6. Return appropriate reponses stating of both the cases - New medicine entry is created and linked | Existing medicine entry is linked.
+        """
+        # Validate that the vendor exists
+        try:
+            vendor = VendorList.objects.get(vendor_id = vendor_id)
+        except VendorList.DoesNotExist:
+            return Response({"error":"Vendor does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Extract and Validate the medicine name from the request body
+        medicine_name = request.data.get('medicine_name')
+        if not medicine_name:
+            return Response({"error":"'medicine_name' field is required as a payload with some appropriate name of the medicine"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if medicine already exists
+        medicine, created = MedicineList.objects.get_or_create(medicine_name = medicine_name)
+
+        # Check if the vendor-medicine link already exists
+        if VendorMedsSupply.objects.filter(vendor_id=vendor, medicine_id=medicine).exists():
+            return Response({"message":"This medicine has an entry and is already linked to the vendor"}, status=status.HTTP_200_OK)
+        
+        # Else link the medicine instance (newly created or already present) to the vendor
+        VendorMedsSupply.objects.create(vendor_id=vendor.vendor_id,medicine_id=medicine.medicine_id)
+
+        # Respond with appropriate success message
+        if created:
+            return Response({"message":"New medicine created and linked successfully"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message":"Existing medicine linked successfully"}, status=status.HTTP_200_OK)
+        
+

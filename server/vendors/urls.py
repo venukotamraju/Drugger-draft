@@ -11,6 +11,7 @@ urlpatterns = [
     path('supplies/',views.VendorMedsSupplyListView.as_view(), name = 'vendor-meds-supply-list'),
     path('supplies/<int:pk>', views.VendorMedsSupplyDetailView.as_view(), name = 'vendor-meds-supply-detail'),
     path('supplies/<int:vendor_id>/medicine/add/', views.VendorMedicineLinkView.as_view(), name = 'vendor-medicine-add'),
+    path('supplies/<int:vendor_id>/medicine/create/',views.VendorMedicineCreateView.as_view(), name='vendor-medicine-create'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

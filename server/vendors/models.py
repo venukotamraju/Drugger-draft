@@ -34,6 +34,7 @@ class VendorCredentials(models.Model):
 
 # for medicines available at the vendor
 class VendorMedsSupply(models.Model):
-    vendor= models.OneToOneField(VendorList,on_delete=models.CASCADE,primary_key = True,db_column = "vendor_id")
+    vendor= models.OneToOneField(VendorList,on_delete=models.CASCADE,db_column = "vendor_id")
     medicine = models.OneToOneField(MedicineList,on_delete=models.DO_NOTHING,db_column = "medicine_id")
-
+    class Meta:
+        unique_together = ["vendor","medicine"]
