@@ -10,13 +10,13 @@
 
     <ImageView
         android:id="@+id/appLogo"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/loginAsText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher_background"/>
+        android:src="@drawable/ic_launcher_background"
+        app:layout_constraintBottom_toTopOf="@id/loginAsText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/loginAsText"
@@ -28,41 +28,47 @@
         android:text="Use as"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/customerCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appLogo" />
-<!--card for user-->
+    <!--card for user-->
     <com.google.android.material.card.MaterialCardView
-        style="?attr/materialCardViewElevatedStyle"
         android:id="@+id/customerCard"
-        android:clickable="true"
-        android:padding="8dp"
-        android:layout_margin="8dp"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/loginAsText"
+        android:layout_margin="8dp"
+        android:backgroundTint="#d8e3ff"
+        android:clickable="true"
+        android:padding="8dp"
+        app:strokeWidth="4dp"
+        app:strokeColor="#6f95f4"
         app:layout_constraintBottom_toTopOf="@id/vendorCard"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/loginAsText">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/customerIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_background"
+                android:layout_margin="8dp"
                 android:padding="8dp"
-                android:layout_margin="8dp"/>
+                android:src="@drawable/ic_launcher_background" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical">
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/userRoleName"
                     android:layout_width="wrap_content"
@@ -71,10 +77,12 @@
                     android:layout_marginBottom="8dp"
                     android:fontFamily="@font/mountserrat_medium"
                     android:text="Consumer"
+                    android:textColor="#6f95f4"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/userRoleDescription"
                     android:layout_width="wrap_content"
@@ -83,6 +91,7 @@
                     android:layout_marginBottom="8dp"
                     android:fontFamily="@font/mountserrat_medium"
                     android:text="I wan't to find medicine"
+                    android:textColor="#6f95f4"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,36 +101,43 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-<!--card for vendor-->
+    <!--card for vendor-->
     <com.google.android.material.card.MaterialCardView
-        style="?attr/materialCardViewElevatedStyle"
         android:id="@+id/vendorCard"
-        android:clickable="true"
-        android:padding="8dp"
-        android:layout_margin="8dp"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        app:strokeWidth="4dp"
+        app:strokeColor="#ffb82b"
+        android:backgroundTint="#ffedbd"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/customerCard">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/vendorIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_background"
+                android:layout_margin="8dp"
                 android:padding="8dp"
-                android:layout_margin="8dp"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher_background" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical">
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/vendorRoleName"
                     android:layout_width="wrap_content"
@@ -132,8 +148,10 @@
                     android:text="Pharmacist"
                     android:textSize="18sp"
                     android:textStyle="bold"
+                    android:textColor="#ffb82b"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/vendorRoleDescription"
                     android:layout_width="wrap_content"
@@ -141,9 +159,10 @@
                     android:layout_margin="8dp"
                     android:layout_marginBottom="8dp"
                     android:fontFamily="@font/mountserrat_medium"
-                    android:text="I'm a medicine merchent"
+                    android:text="I'm a medicine merchant"
                     android:textSize="14sp"
                     android:textStyle="bold"
+                    android:textColor="#ffb82b"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </LinearLayout>

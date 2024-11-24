@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center|start"
     android:orientation="vertical"
     android:padding="24dp"
-    tools:context=".fragments.LoginFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.VendorLoginFragment">
+
     <include
         android:id="@+id/banner"
         layout="@layout/banner"
@@ -16,12 +17,11 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"/>
 
-    <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Hi! User Welcome to MediFindr"
+        android:text="Hi! Vendor welcome to MediFindr"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -32,31 +32,28 @@
         android:layout_marginBottom="32dp"
         android:text="Sign in into your account" />
 
-    <!-- Phone Number Input -->
-
-
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/txtMobile"
+        android:id="@+id/txtEmail"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="63dp"
-        android:hint="Mobile"
+        android:hint="Email"
+        android:layout_centerHorizontal="true"
         android:textColorHint="?attr/colorOnPrimary"
         app:boxStrokeColor="#1670b1">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/registeredMobile"
+            android:id="@+id/registeredVendorEmail"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:imeOptions="actionDone"
-            android:inputType="phone"
+            android:inputType="textEmailAddress"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="15sp"
             android:textStyle="bold"
             tools:ignore="TouchTargetSizeCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Button to Send OTP -->
     <Button
         android:id="@+id/sendOtpButton"
         android:layout_width="match_parent"
@@ -64,4 +61,5 @@
         android:layout_marginTop="24dp"
         android:backgroundTint="#1670b1"
         android:text="Next" />
+
 </LinearLayout>

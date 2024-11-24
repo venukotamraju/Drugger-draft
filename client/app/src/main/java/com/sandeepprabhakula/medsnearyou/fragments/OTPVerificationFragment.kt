@@ -36,16 +36,19 @@ class OTPVerificationFragment : Fragment() {
             val otp =
                 otpDigit1.text.toString() + otpDigit2.text.toString() +
                         otpDigit3.text.toString() + otpDigit4.text.toString()
-            if (otp == "1234") {
-//                 TODO: verify otp and role, navigate to user home screen
-//                showBanner("You've logged in as a user",true)
-                findNavController().navigate(R.id.action_OTPVerificationFragment_to_userFragment)
+            when (otp) {
+                "1234" -> {
+        //                 TODO: verify otp and role, navigate to user home screen
+                    findNavController().navigate(R.id.action_OTPVerificationFragment_to_userFragment)
 
-            } else if (otp == "5678") {
-//                 TODO: verify otp and role, navigate to admin screen
-                showBanner("You've logged in as a admin",true)
-            }else{
-                showBanner("Invalid OTP",false)
+                }
+                "5678" -> {
+        //                 TODO: verify otp and role, navigate to admin screen
+                    findNavController().navigate(R.id.action_OTPVerificationFragment_to_vendorFragment)
+                }
+                else -> {
+                    showBanner("Invalid OTP",false)
+                }
             }
         }
         return binding.root

@@ -10,13 +10,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.Slider
 import com.sandeepprabhakula.medsnearyou.R
+import com.sandeepprabhakula.medsnearyou.adapter.SearchedAdapter
 import com.sandeepprabhakula.medsnearyou.databinding.FragmentUserBinding
+import com.sandeepprabhakula.medsnearyou.tempDto.SearchDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -28,12 +32,13 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-class UserFragment : Fragment() {
+class UserFragment : Fragment() ,SearchedAdapter.ViewDetails{
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
     private val searchQuery = MutableStateFlow("")
 
     private val searchScope = CoroutineScope(Dispatchers.Main + Job())
+
 
     @OptIn(FlowPreview::class)
     override fun onCreateView(
@@ -42,6 +47,9 @@ class UserFragment : Fragment() {
     ): View {
         _binding = FragmentUserBinding.inflate(layoutInflater, container, false)
         binding.userSearchView.setupWithSearchBar(binding.searchBar)
+        val adapter = SearchedAdapter(this)
+        binding.searchedContents.adapter = adapter
+        binding.searchedContents.layoutManager = LinearLayoutManager(requireContext())
 //        val startLat = 17.348757868054065
 //        val startLon = 78.63753294161954
 //        val desLat = 17.327250
@@ -66,15 +74,24 @@ class UserFragment : Fragment() {
 
 
         })
+        var listOfSearchedContent = mutableListOf<SearchDTO>()
+        listOfSearchedContent.add(SearchDTO("Paracetomol","Winterfell pharmacy", "1.5Kms"))
+        listOfSearchedContent.add(SearchDTO("Paracetomol","Targaryens pharmacy store", "2.5Kms"))
+        listOfSearchedContent.add(SearchDTO("Paracetomol","Dragonstone medical shop", "3.5Kms"))
+        listOfSearchedContent.add(SearchDTO("Paracetomol","The wall Medical store", "4.5Kms"))
+        listOfSearchedContent.add(SearchDTO("Paracetomol","Pharmacy of westroes", "3Kms"))
+        Log.d("SEARCHED_LOGS_SIZE",listOfSearchedContent.size.toString())
         searchEditText.setOnEditorActionListener { _, _, _ ->
             val query = binding.userSearchView.text.toString()
             if (query.isNotEmpty()) {
                 addChipToGroup(query)
-                binding.userSearchView.setText("") // Clear search input
+                binding.userSearchView.text.clear() // Clear search input
+                adapter.setData(listOfSearchedContent)
             }
             true
-
         }
+
+
 
         searchScope.launch {
             searchQuery
@@ -83,9 +100,14 @@ class UserFragment : Fragment() {
                 .distinctUntilChanged() // Only trigger if the text is different from last
                 .collect { query ->
                     Log.d("SEARCHED_LOGS", query)
+                    Log.d("SEARCHED","Inside Debounce")
+                    Log.d("SEARCHED_LOGS_LIST", listOfSearchedContent[0].medicineName)
+                    adapter.setData(listOfSearchedContent)
+
 //                    TODO: Make an API call to search Endpoint
 //                    refer this url for populating recyclerview: https://chatgpt.com/c/6721a1c5-020c-8012-a6bb-2becadae9019
 //                    fetchSearchResults(query)
+
                 }
         }
 
@@ -196,6 +218,10 @@ class UserFragment : Fragment() {
             }
         }
         binding.filteredChipGroup.addView(chip)
+    }
+
+    override fun onCardClicked(searchedDTO: SearchDTO) {
+        Toast.makeText(requireContext(),"${searchedDTO.medicineName}",Toast.LENGTH_LONG).show()
     }
 
 }

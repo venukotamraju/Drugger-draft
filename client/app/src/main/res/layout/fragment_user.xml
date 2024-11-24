@@ -41,32 +41,40 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/distanceChoosingLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <com.google.android.material.chip.Chip
                 android:id="@+id/filterChip"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Filter"
-                app:chipIcon="@drawable/filter"/>
+                app:chipIcon="@drawable/filter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/filteredChipGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                app:singleLine="true"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/filterChip"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filterChip"
+                app:singleLine="true" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/searchedContents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filteredChipGroup"
+                tools:listitem="@layout/searched_medicine_layout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/searchedContents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+
     </com.google.android.material.search.SearchView>
 </androidx.constraintlayout.widget.ConstraintLayout>

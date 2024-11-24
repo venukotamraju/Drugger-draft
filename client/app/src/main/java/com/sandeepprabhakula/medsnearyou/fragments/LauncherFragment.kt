@@ -21,6 +21,9 @@ class LauncherFragment : Fragment() {
         binding.customerCard.setOnClickListener {
             findNavController().navigate(R.id.action_launcherFragment_to_loginFragment)
         }
+        binding.vendorCard.setOnClickListener {
+            findNavController().navigate(R.id.action_launcherFragment_to_vendorLoginFragment)
+        }
         return binding.root
     }
 

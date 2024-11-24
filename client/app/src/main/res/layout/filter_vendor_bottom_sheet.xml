@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:padding="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/filterHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/mountserrat_medium"
+        android:text="Filter by"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/filterHeadingDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/filterHeadingDivider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filterHeading" />
+
+    <TextView
+        android:id="@+id/categorySelectionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_light"
+        android:text="Choose a category"
+        android:textSize="21sp"
+        app:layout_constraintTop_toBottomOf="@id/filterHeadingDivider"
+        app:layout_constraintBottom_toTopOf="@id/categoriesList"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/categorySelectionText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/categoriesList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical">
+        <CheckBox
+            android:id="@+id/allCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="All"/>
+
+        <CheckBox
+            android:id="@+id/categoryA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category A"/>
+
+        <CheckBox
+            android:id="@+id/categoryB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category B"/>
+
+        <CheckBox
+            android:id="@+id/categoryC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category C"/>
+
+
+        <CheckBox
+            android:id="@+id/categoryD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category D"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/submitCategoryFilterBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#1670b1"
+        android:text="Filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/categoriesList" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
