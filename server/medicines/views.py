@@ -114,10 +114,12 @@ class MedicineSearchView(APIView):
     """
     View for searching medicines either with full name or partial string
     """
-    def get(self, request, name):
+    def get(self, request, *args, **kwargs):
         
+        # Get the query from the URL 
+        name = request.query_params.get('name','').strip()
         if not name:
-            return Response({"error":"Name is required as in /search/medicne/<str:name>"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":"Query parameter 'name' is required. As in ../search/medicine?name='your medicine name'"},status=status.HTTP_400_BAD_REQUEST)
         
         # Search for medicines with a case-insensitive partial match, store them in "medicines"
         medicines = MedicineList.objects.filter(medicine_name__icontains=name)
@@ -128,3 +130,31 @@ class MedicineSearchView(APIView):
         # Serialize the result
         serializer = MedicineListSerializer(medicines, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class CategorySearchView(APIView):
+    """
+    Search for registered categories either by full string or partial string
+    """
+    def get(self, request, *args, **kwargs):
+
+        """
+        1. Fetch the name passed along the URL as a query string
+        2. See if any matches with the name exists in CategoriesList
+        3. If matches are found, return the serialized list of the filtered categories else return with a HTTP_404
+        """
+        
+        # Get the query from the URL
+        name = request.query_params.get('name','').strip()
+        if not name:
+            return Response({"error":"Query Parameter 'name' is required. As in ../search/category?name='your category name'"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Search for categories with a case-insensitive partial match, store them in "categories"
+        categories = CategoriesList.objects.filter(category_name__icontains=name)
+
+        if not categories.exists():
+            return Response({"message":"No categories found for the given search"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Serialize the result
+        serializer = CategoriesListSerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
