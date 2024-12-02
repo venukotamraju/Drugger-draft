@@ -28,12 +28,12 @@ object SessionManager {
         val editor = prefs.edit()
         editor.putString("uid",loginResponseDTO.uid)
         editor.putString("token",loginResponseDTO.token)
-        editor.putString("mobile",loginResponseDTO.mobile)
+        editor.putString("role",loginResponseDTO.role)
         editor.apply()
 
     }
 
-    fun getString(context: Context, key: String): String? {
+    private fun getString(context: Context, key: String): String? {
         val prefs: SharedPreferences =
             context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
         return prefs.getString(key, null)

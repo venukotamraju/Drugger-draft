@@ -48,7 +48,7 @@
         android:value="5"
         android:valueFrom="0"
         android:valueTo="20"
-        app:layout_constraintBottom_toTopOf="@id/submitFilterBtn"
+        app:layout_constraintBottom_toTopOf="@id/categorySelectionText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/radiusKms"
@@ -57,6 +57,59 @@
         app:thumbWidth="4dp"
         app:trackColorActive="#1670b1"
         app:trackHeight="8dp" />
+    <TextView
+        android:id="@+id/categorySelectionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_light"
+        android:text="Choose a category"
+        android:textSize="21sp"
+        app:layout_constraintTop_toBottomOf="@id/filterHeadingDivider"
+        app:layout_constraintBottom_toTopOf="@id/categoriesList"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/categorySelectionText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/categoriesList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical">
+        <CheckBox
+            android:id="@+id/allCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="All"/>
+
+        <CheckBox
+            android:id="@+id/categoryA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category A"/>
+
+        <CheckBox
+            android:id="@+id/categoryB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category B"/>
+
+        <CheckBox
+            android:id="@+id/categoryC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category C"/>
+
+
+        <CheckBox
+            android:id="@+id/categoryD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category D"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/submitFilterBtn"
@@ -66,6 +119,6 @@
         android:text="Filter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/distanceSeekBar" />
+        app:layout_constraintTop_toBottomOf="@id/categoriesList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

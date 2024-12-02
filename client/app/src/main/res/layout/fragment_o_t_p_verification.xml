@@ -73,6 +73,22 @@
             android:inputType="number"
             android:maxLength="1"
             android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/otpDigit5"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/otpDigit6"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
     </LinearLayout>
 
     <!-- Resend OTP Link -->

@@ -28,6 +28,7 @@ class SearchedAdapter(private val listener:ViewDetails): RecyclerView.Adapter<Se
         val searchedMedicneText: TextView = itemView.findViewById(R.id.searchedMedicineName)
         val searchedMedicneVendor: TextView = itemView.findViewById(R.id.searchedVendorName)
         val distance: TextView = itemView.findViewById(R.id.searchedMedicineDistance)
+        val searchedMedicineCategory:TextView = itemView.findViewById(R.id.categoryText)
         val searchedMedicineCard: CardView = itemView.findViewById(R.id.searchedMedicineCard)
     }
 
@@ -35,6 +36,7 @@ class SearchedAdapter(private val listener:ViewDetails): RecyclerView.Adapter<Se
         val currentItem = searchList[position]
         holder.searchedMedicneText.text = currentItem.medicineName
         holder.searchedMedicneVendor.text = currentItem.medicineVendor
+        holder.searchedMedicineCategory.text = currentItem.category
         holder.distance.text = currentItem.distance
     }
     fun setData(searchList:MutableList<SearchDTO>){

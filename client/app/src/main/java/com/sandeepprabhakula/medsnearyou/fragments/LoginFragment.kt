@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.sandeepprabhakula.medsnearyou.R
 import com.sandeepprabhakula.medsnearyou.databinding.FragmentLoginBinding
+import com.sandeepprabhakula.medsnearyou.dto.CustomerLoginDTO
+import com.sandeepprabhakula.medsnearyou.dto.VendorLoginDTO
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
@@ -27,7 +29,10 @@ class LoginFragment : Fragment() {
                 showBanner("Invalid mobile number", false)
             } else {
 //                showBanner("OTP sent to the mobile number", true)
-                findNavController().navigate(R.id.action_loginFragment_to_OTPVerificationFragment)
+                val action = LoginFragmentDirections.actionLoginFragmentToOTPVerificationFragment(
+                    CustomerLoginDTO(mobileNumber,"ROLE_USER"),VendorLoginDTO()
+                )
+                findNavController().navigate(action)
             }
         }
         return binding.root

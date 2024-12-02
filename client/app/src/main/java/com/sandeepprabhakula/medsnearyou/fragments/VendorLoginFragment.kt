@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.sandeepprabhakula.medsnearyou.R
 import com.sandeepprabhakula.medsnearyou.databinding.FragmentVendorLoginBinding
+import com.sandeepprabhakula.medsnearyou.dto.CustomerLoginDTO
+import com.sandeepprabhakula.medsnearyou.dto.VendorLoginDTO
 
 
 class VendorLoginFragment : Fragment() {
@@ -21,11 +23,15 @@ class VendorLoginFragment : Fragment() {
     ): View {
         _binding = FragmentVendorLoginBinding.inflate(inflater, container, false)
         binding.sendOtpButton.setOnClickListener {
-            val isValidEmail = isEmailValid(binding.registeredVendorEmail.text.toString().trim())
+            val email = binding.registeredVendorEmail.text.toString().trim()
+            val isValidEmail = isEmailValid(email)
             if (!isValidEmail) {
                 showBanner("Please provide valid email address", false)
             } else {
-                findNavController().navigate(R.id.action_vendorLoginFragment_to_OTPVerificationFragment)
+                val action = VendorLoginFragmentDirections.actionVendorLoginFragmentToOTPVerificationFragment(
+                    CustomerLoginDTO(), VendorLoginDTO(email,"ROLE_VENDOR")
+                )
+                findNavController().navigate(action)
             }
         }
 

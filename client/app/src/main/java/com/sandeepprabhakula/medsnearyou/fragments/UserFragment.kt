@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
@@ -75,11 +76,16 @@ class UserFragment : Fragment() ,SearchedAdapter.ViewDetails{
 
         })
         var listOfSearchedContent = mutableListOf<SearchDTO>()
-        listOfSearchedContent.add(SearchDTO("Paracetomol","Winterfell pharmacy", "1.5Kms"))
-        listOfSearchedContent.add(SearchDTO("Paracetomol","Targaryens pharmacy store", "2.5Kms"))
-        listOfSearchedContent.add(SearchDTO("Paracetomol","Dragonstone medical shop", "3.5Kms"))
-        listOfSearchedContent.add(SearchDTO("Paracetomol","The wall Medical store", "4.5Kms"))
-        listOfSearchedContent.add(SearchDTO("Paracetomol","Pharmacy of westroes", "3Kms"))
+        listOfSearchedContent.add(SearchDTO("Paracetomol","Winterfell pharmacy", "1.5Kms","Category A"))
+        listOfSearchedContent.add(SearchDTO("Dolo650","Targaryens pharmacy store", "2.5Kms","Category B"))
+        listOfSearchedContent.add(SearchDTO("eldoper","Dragonstone medical shop", "3.5Kms","Category C"))
+        listOfSearchedContent.add(SearchDTO("crocin","The wall Medical store", "4.5Kms","Category D"))
+        listOfSearchedContent.add(SearchDTO("saridion","Pharmacy of westroes", "3Kms","Category E"))
+        listOfSearchedContent.add(SearchDTO("eno","Pharmacy of Iron Islands", "3Kms","Category A"))
+        listOfSearchedContent.add(SearchDTO("test1","Pharmacy of Dorne", "3Kms","Category B"))
+        listOfSearchedContent.add(SearchDTO("test2","Arryn pharmacy", "3Kms","Category C"))
+        listOfSearchedContent.add(SearchDTO("test3","Mountain and Vale pharmacy", "3Kms","Category D"))
+        listOfSearchedContent.add(SearchDTO("test4","Crownlands medicines", "3Kms","Category E"))
         Log.d("SEARCHED_LOGS_SIZE",listOfSearchedContent.size.toString())
         searchEditText.setOnEditorActionListener { _, _, _ ->
             val query = binding.userSearchView.text.toString()
@@ -99,10 +105,11 @@ class UserFragment : Fragment() ,SearchedAdapter.ViewDetails{
                 .filter { it.isNotEmpty() } // Only hit API if the text is not empty
                 .distinctUntilChanged() // Only trigger if the text is different from last
                 .collect { query ->
-                    Log.d("SEARCHED_LOGS", query)
-                    Log.d("SEARCHED","Inside Debounce")
-                    Log.d("SEARCHED_LOGS_LIST", listOfSearchedContent[0].medicineName)
-                    adapter.setData(listOfSearchedContent)
+                    val enhancedQuery = iterateChips()
+                    val filteredList: List<SearchDTO> = listOfSearchedContent.filter {
+                        it.medicineName.contains(query, ignoreCase = true) || enhancedQuery.contains(it.category)
+                    }
+                    adapter.setData(filteredList.toMutableList())
 
 //                    TODO: Make an API call to search Endpoint
 //                    refer this url for populating recyclerview: https://chatgpt.com/c/6721a1c5-020c-8012-a6bb-2becadae9019
@@ -124,6 +131,15 @@ class UserFragment : Fragment() ,SearchedAdapter.ViewDetails{
         val radiusKms = view.findViewById<TextView>(R.id.radiusKms)
         val distanceSeekBar = view.findViewById<Slider>(R.id.distanceSeekBar)
         val submitFilterBtn = view.findViewById<Button>(R.id.submitFilterBtn)
+        val allCategories: CheckBox = view.findViewById(R.id.allCategories)
+        val categoryA: CheckBox = view.findViewById(R.id.categoryA)
+        val categoryB: CheckBox = view.findViewById(R.id.categoryB)
+        val categoryC: CheckBox = view.findViewById(R.id.categoryC)
+        val categoryD: CheckBox = view.findViewById(R.id.categoryD)
+
+//        Category Selection of medicine
+
+        val selectedCategories = mutableListOf<String>()
 
 
 //        Selecting the radius range
@@ -155,6 +171,26 @@ class UserFragment : Fragment() ,SearchedAdapter.ViewDetails{
             val existingDistanceChip =
                 binding.filteredChipGroup.children.find { (it as Chip).text.contains("Kms") }
             if (existingDistanceChip != null) binding.filteredChipGroup.removeView(existingDistanceChip)
+
+//            Adding the category to the chip group
+            if(categoryA.isChecked) {
+                selectedCategories.add(categoryA.text.toString())
+                allCategories.isChecked = false
+            }
+            if(categoryB.isChecked) {
+                selectedCategories.add(categoryB.text.toString())
+                allCategories.isChecked = false
+            }
+            if(categoryC.isChecked) {
+                selectedCategories.add(categoryC.text.toString())
+                allCategories.isChecked = false
+            }
+            if(categoryD.isChecked) {
+                selectedCategories.add(categoryD.text.toString())
+                allCategories.isChecked = false
+            }
+            if(selectedCategories.size==0) selectedCategories.add(0,"All")
+            populateChipGroup(selectedCategories)
 
 //            adding the chips to chip group
 
@@ -222,6 +258,27 @@ class UserFragment : Fragment() ,SearchedAdapter.ViewDetails{
 
     override fun onCardClicked(searchedDTO: SearchDTO) {
         Toast.makeText(requireContext(),"${searchedDTO.medicineName}",Toast.LENGTH_LONG).show()
+    }
+    private fun populateChipGroup(categories:List<String>){
+        for(category in categories){
+            val existingDistanceChip =
+                binding.filteredChipGroup.children.find { (it as Chip).text.contains(category) }
+            if (existingDistanceChip != null) binding.filteredChipGroup.removeView(existingDistanceChip)
+            addChipToGroup(category)
+        }
+    }
+
+    private fun iterateChips():String{
+        val selectedChips = mutableListOf<String>()
+        binding.filteredChipGroup.children.forEach { view ->
+            if (view is Chip && view.isChecked) {
+                selectedChips.add(view.text.toString()) // Collect chip text
+            }
+        }
+
+// Convert the selected chips into a search query string
+        val query = selectedChips.joinToString(separator = "+")
+        return query
     }
 
 }
