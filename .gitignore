@@ -1,0 +1,10 @@
+# ignore ALL files named 'migrations' '__pycache__' and 'python compiled files'
+migrations/
+__pycache__/
+*.pyc
+
+# Ignore evnironment files
+.env
+
+# Ignore VS Code Settings (Optional)
+.vscode/
