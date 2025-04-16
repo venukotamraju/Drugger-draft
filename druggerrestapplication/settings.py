@@ -14,19 +14,20 @@ from pathlib import Path
 import environ
 import os
 
-# Access .env file and its variables (environment variables)
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Access .env file and its variables (environment variables)
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env")) # type: ignore
+
+print(env)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'medicines',
     'customers',
     'rest_framework',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +139,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE':'Drugger Rest Apis',
+    'DESCRIPTION':'API Documentation',
+    'VERSION':'1.0.0',
+    'CONTACT':{
+        'name':'Venu Kotamraju',
+        'url':'https://venukotamraju.vercel.app',
+        'email':'kotamraju.venugopal@gmail.com'
+    },
+    # Do not include schema endpoint into schema
+    'SERVE_INCLUDE_SCHEMA': False,
+}

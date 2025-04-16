@@ -1,12 +1,15 @@
 from gc import get_objects
-from django.http import Http404
 from .models import VendorList,VendorDetails,VendorCredentials,VendorMedsSupply
 from medicines.models import MedicineList
-from .serializers import VendorListSerializer,VendorDetailsSerializer,VendorDetailsCreateSerializer,VendorCredentialsSerializer,VendorMedsSupplySerializer
+from .serializers import VendorListSerializer,VendorDetailsCreateSerializer,VendorCredentialsSerializer,VendorMedsSupplySerializer,VendorIdSerializer
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, serializers
+
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample, OpenApiParameter, inline_serializer
+from drf_spectacular.types import OpenApiTypes
+
 
 from django.shortcuts import get_object_or_404
 
@@ -18,64 +21,66 @@ class ListAllVendors(APIView):
     """
     This view contains a GET endpoint to retrieve a 'List Of All Registered Vendors'.
     """
+    @extend_schema(
+            responses={
+                200: VendorListSerializer(many=True)
+                }
+    )
     def get(self, request, format=None):
         """
-        Description: This is a GET route that is associated with the endpoint ../vendors/vendorlist.
+        Description: This is a GET route that is associated with the endpoint ../vendors/vendorlist.\n
         Working: 
         1. This method accesses the model that contains the entries of all registered vendors
         2. Passes that accessed model instance to a serializer
         3. Then returns the data that is given out by the serializer
-        Verification: 
-        The response will be a json object of the format
-        [
-            {
-                vendor_id:int,
-                vendor_name:string,
-                details:{
-                    vendor_address:string,
-                    vendor_dln:string,
-                    vendor_contact:string,
-                    vendor_email:string,
-                    vendor_coordinates:string
-                }
-            }
-        ]
-        Parameters:
-        This method/endpoint does not accept any parameters, be it any format, either query_params or json_body. 
         """
         vendor_list = VendorList.objects.all()
         serializer = VendorListSerializer(vendor_list, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class SingleVendorDetailsView(APIView):
     """
     This view contains a GET endpoint to be returned with the 'Details of a Single Vendor'.
     """
+    @extend_schema(
+            summary="get the details of a single vendor with the requested Vendor Name",
+            parameters=[
+                OpenApiParameter(
+                    name="name",
+                    type=OpenApiTypes.STR,
+                    location=OpenApiParameter.PATH,
+                    description="The name of the vendor to be fetched",
+                    examples=[
+                        OpenApiExample(
+                            name="Example Vendor Name",
+                            value="test_vendor_01"
+                        )
+                    ]
+                )
+            ],
+            responses={
+                200: VendorListSerializer(),
+                404: OpenApiResponse(
+                    response={
+                        "type":"object",
+                        "properties":{
+                            "error":{
+                                "type":"string",
+                                "example":"vendor does not exist"
+                            }
+                        },
+                        "description":"Not Found - Vendor Does Not Exist",
+                    }
+                )
+            },
+    )
     def get(self, request, name,  format=None):
         """
-        Description: This is a GET route that is associated with the endpoint ../vendors/singlevendor/<str:name>.
+        Description: This is a GET route that is associated with the endpoint ../vendors/singlevendor/<str:name>\n
         Working:
         1. This method accesses the model that contains entries of all registered vendors by passing in the vendor's name as the parameter.
         2. Passes that accessed model instance to a serializer
         3. Then returns the data that is given out by the serializer
-        Verification: 
-        The response will be a json object of the format
-            {
-                vendor_id:int,
-                vendor_name:string,
-                details:{
-                    vendor_address:string,
-                    vendor_dln:string,
-                    vendor_contact:string,
-                    vendor_email:string,
-                    vendor_coordinates:string
-                }
-            }
-        Parameters:
-        1. Params: Required,
-        2. Param Description:
-        This method/endpoint accepts the vendors's name as a parameter in the url string ../vendors/singlevendor/<str:name> where <str:name> means a string of vendor's name
-
         """
         try:
             vendor_details = VendorList.objects.get(vendor_name = name)
@@ -86,9 +91,50 @@ class SingleVendorDetailsView(APIView):
 
 class VendorDetailsEntryView(APIView):
     """
-    This view contains a GET endpoint to be returned with the 'Details of a Single Vendor'.
-    enter and update details of a vendor
+    POST: Create a new Vendor along with the details.\n
+    PUT: Update the vendor's name and/or details.\n
+    DELETE: Delete vendor details using vendor_id.
     """
+    @extend_schema(
+            description="Create a new Vendor along with the details.",
+            summary="Create Vendor Details",
+            request=VendorDetailsCreateSerializer,
+            responses={
+                201:VendorDetailsCreateSerializer,
+                400:OpenApiResponse(
+                    response=OpenApiTypes.OBJECT,
+                    description="Bad Request - Invalid Body Content"
+                )
+            },
+            examples=[
+                OpenApiExample(
+                    name='Schema Example',
+                    value={
+                        "vendor_id": 0,
+                        "vendor_address": "string",
+                        "vendor_dln": "string",
+                        "vendor_contact": "string",
+                        "vendor_email": "string",
+                        "vendor_coordinates": "string"
+                    },      
+                    request_only=True,
+                    response_only=False
+                ),
+                OpenApiExample(
+                    name='Value Example',
+                    value={
+                        "vendor_id":1,
+                        "vendor_address":"Telangana, India",
+                        "vendor_dln":"AVBGD1122F",
+                        "vendor_contact":"9848238660",
+                        "vendor_email":"test_vendor_01@gmail.com",
+                        "vendor_coordinates":"41.40338,2.17403"
+                    },
+                    request_only=True,
+                    response_only=False
+                )
+            ]
+    )
     def post(self, request, format=None):
         serializer = VendorDetailsCreateSerializer(data = request.data)
         if serializer.is_valid():
@@ -96,6 +142,44 @@ class VendorDetailsEntryView(APIView):
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+            description="Update the vendor's name and/or details.",
+            summary="Update Any Of The Vendor's Details",
+            request=VendorListSerializer,
+            responses={
+                200:VendorListSerializer,
+                400:OpenApiTypes.OBJECT
+            },
+            examples=[
+                OpenApiExample(
+                    name='Only Name/ Minimal Entry',
+                    description='If only vendor\'s name needs to be changed',
+                    value={
+                        "vendor_id": "int",    
+                        "vendor_name": "string"
+                    },
+                    request_only=True,
+                    response_only=False
+                ),
+                OpenApiExample(
+                    name='Name and Details/ Brief Entry',
+                    description='Use this format to change any field of the vendor\'s details',
+                    value={
+                        "vendor_id": 0,
+                        "vendor_name": "string",
+                        "details": {
+                            "vendor_address": "string",
+                            "vendor_dln": "string",
+                            "vendor_contact": "string",
+                            "vendor_email": "string",
+                            "vendor_coordinates": "string"
+                        }
+                    },
+                    request_only=True,
+                    response_only=False,
+                )
+            ]     
+    )
     def put(self, request, format=None):
         try:
             vendor = VendorList.objects.get(vendor_id = request.data["vendor_id"])
@@ -118,9 +202,54 @@ class VendorDetailsEntryView(APIView):
         except VendorList.DoesNotExist:
             return Response({"message":"Vendor Does Not Exist"}, status = status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+            summary='Delete Vendor Details',
+            description='Delete vendor details by passing `vendor_id` in the `request_body`. Example:`{\'vendor_id\'`:`\'integer\'}`',
+            request=VendorIdSerializer,
+            responses={
+                204:OpenApiResponse(
+                    description='NO_CONTENT',
+                    response={
+                        'type':'object',
+                        'properties':{
+                            'message':{
+                                'type':'string',
+                                'example':'Vendor details deleted successfully'    
+                            }
+                        },
+                        'description':'Vendor details will be deleted'
+                    }
+                ),
+                400:OpenApiResponse(
+                    description='BAD_REQUEST',
+                    response={
+                        "type":"object",
+                        "properties":{
+                            "message":{
+                                "type":"string",
+                                "example":"Vendor not found."
+                            }
+                        },
+                        "description":"Bad_Request - Vendor Not Found"
+                    }
+                )
+            },
+            examples=[
+                OpenApiExample(
+                    name='Delete Vendor Example',
+                    description='Delete the vendor by passing vendor_id in the body',
+                    value={
+                        'vendor_id':1
+                    },
+                    request_only=True,
+                    response_only=False
+                )
+            ]
+    )
     def delete(self, request, format=None):
         try:
-            vendor = VendorList.objects.get(vendor_id = request["vendor_id"])
+            vendor_id = request.data["vendor_id"]
+            vendor = VendorList.objects.get(vendor_id=vendor_id)
             vendor_details = VendorDetails.objects.filter(vendor_id = vendor)
             delete_vendor_details = vendor_details.delete()
             return Response({"message":"Vendor details deleted successfully."}, status = status.HTTP_204_NO_CONTENT)
@@ -131,11 +260,68 @@ class GetVendorCredentials(APIView):
     """
     get and create vendor credentials
     """
+    @extend_schema(
+            description='Fetch credentials of all the vendors',
+            summary='Get all vendor\'s credentials',
+            responses=VendorCredentialsSerializer(many=True)
+    )
     def get(self,request):
         vendor_creds = VendorCredentials.objects.all()
         serializer = VendorCredentialsSerializer(vendor_creds, many=True)
         return Response(serializer.data)
-#   add vendor with credentials
+
+    @extend_schema(
+            summary='Make an entry of vendor\'s credentials',
+            description='This is the first route to be accessed before any other vendor\'s routes. When posting details via this route, the vendor will get their first entry/footprint, getting them added into the vendor_list and getting assigned with an `id` which shall then be referenced as `vendor_id` for future and subsequent api calls regarding the vendor.',
+            request=inline_serializer(
+                name='VendorFirstFootprint',
+                fields={
+                    'vendor_name':serializers.CharField(),
+                    'vendor_email':serializers.CharField(),
+                    'vendor_key':serializers.CharField()
+                }
+            ),
+            responses={
+                201:OpenApiResponse(
+                    response={
+                        'type':'object',
+                        'properties':{
+                            'nameEntry':{
+                                'type':'object',
+                                'properties':{
+                                    'vendor_id':{
+                                        'type':'integer'
+                                    },
+                                    'vendor_name':{
+                                        'type':'string'
+                                    },
+                                    'details':{
+                                        'type': ['object','null'],
+                                        'description':'Additional details about the vendor (nullable)'
+                                    }
+                                }
+                            },
+                            'credentialEntry':{
+                                'type':'object',
+                                'properties':{
+                                    'vendor_id':{
+                                        'type':'integer',
+                                    },
+                                    'vendor_email':{
+                                        'type':'string'
+                                    },
+                                    'vendor_key':{
+                                        'type':'string'
+                                    }
+                                }
+                            }
+                        },
+                        'description':'Created - Returns `nameEntry` and `credentialEntry` objects'
+                    },
+                    description='Enter first instance of name and credentials of the vendor'
+                )
+            }
+    )
     def post(self, request):
         name_entry_serializer = VendorListSerializer(data=request.data)
         if name_entry_serializer.is_valid():

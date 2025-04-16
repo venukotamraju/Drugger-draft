@@ -44,3 +44,9 @@ class VendorMedsSupplySerializer(serializers.ModelSerializer):
             return MedicineListSerializer(medicine).data
         except MedicineList.DoesNotExist:
             return None
+
+#  serializer for DELETE api documentation
+class VendorIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VendorList
+        fields = ['vendor_id']
